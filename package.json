@@ -1,0 +1,29 @@
+{
+  "name": "kf-router",
+  "version": "1.0.0",
+  "description": "A File-based ReSTful router for koa.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node ./test/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HeraldStudio/kf-router.git"
+  },
+  "keywords": [
+    "koa",
+    "router"
+  ],
+  "author": "Herald Studio",
+  "license": "GPL-2.0",
+  "bugs": {
+    "url": "https://github.com/HeraldStudio/kf-router/issues"
+  },
+  "homepage": "https://github.com/HeraldStudio/kf-router#readme",
+  "dependencies": {
+    "koa": "^2.4.1"
+  },
+  "devDependencies": {
+    "axios": "^0.17.1"
+  }
+}
