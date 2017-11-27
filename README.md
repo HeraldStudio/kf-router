@@ -73,6 +73,6 @@ exports.route = {
 
 ### 声明
 
-kf-router 是简易的无协议开源软件，您暂时可以按照 WTFPL 随意使用它们。
+kf-router 是简易的无协议开源软件，您暂时可以按照 [WTFPL](https://zh.wikipedia.org/zh-hans/WTFPL) 随意使用它们。
 
 kf-router 不是稳定有保障的软件，切勿在正式生产环境使用。
