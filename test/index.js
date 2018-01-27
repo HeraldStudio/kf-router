@@ -17,7 +17,8 @@ exports.route = {
       (await axios.put('/')).data,
       (await axios.delete('/')).data,
       (await axios.get('/some')).data,
-      (await axios.get('/other')).data
+      (await axios.get('/other')).data,
+      (await axios.post('/bodyparser?a=1', 'b=2')).data
     ]
   },
   post() {

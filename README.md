@@ -6,6 +6,8 @@ Made with <3 by `rikumi`, Herald Studio
 
 kf-router 是一个极简的、在 Koa 上运行的全自动文件路由中间件。只需在主程序中一行代码，即可根据需要的 ReSTful 路由结构，快速开始书写路由处理程序。
 
+kf-router 自带了最常用的 koa-bodyparser，将 `ctx.query` 和 `ctx.request.body` 合并为 `ctx.params`，更方便使用。
+
 ## 用法
 
 ### 安装
@@ -30,6 +32,22 @@ app.listen(3000)
 ```
 
 将当前所在的 `module` 传入 kf，使 kf-router 得到从你的当前路径进行 `require` 的能力，接下来即可创建路由处理程序，开始服务。
+
+### 配置
+
+`kf(module)` 还可以增加对于 koa-bodyparser 的配置：
+
+```javascript
+app.use(kf(module), {
+  bodyparser: {
+    detectJSON: function (ctx) {
+      return /\.json$/i.test(ctx.path);
+    }
+  }
+})
+```
+
+`bodyparser` 的具体配置参数请参见其[文档](https://github.com/koajs/bodyparser)。
 
 ### 路由处理程序
 
