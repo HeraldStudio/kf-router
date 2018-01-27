@@ -1,8 +1,4 @@
-const bodyparser = require('koa-bodyparser')
-
-module.exports = (thatModule, config = {}) => {
-
-  const bp = bodyparser(config.bodyparser || {})
+module.exports = (thatModule) => {
 
   let requireCache = {}
 
@@ -38,8 +34,6 @@ module.exports = (thatModule, config = {}) => {
   }
 
   return async ctx => {
-    await bp(ctx, async () => {})
-    ctx.params = { ...ctx.query, ...ctx.request.body }
     let [route, method] = [ctx.path, ctx.method.toLowerCase()]
 
     // 转换为相对路径，进行 require
