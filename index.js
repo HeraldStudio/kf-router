@@ -38,32 +38,43 @@ module.exports = (thatModule) => {
 
     // 转换为相对路径，进行 require
     let handler = requireHandlerCached(route)
-    if (handler) {
+    if (handler && handler.hasOwnProperty('route')) {
 
       // 若 require 成功，判断是否有对应方法的处理函数，没有该方法则 405
-      if (handler.hasOwnProperty('route') && handler.route.hasOwnProperty(method)) {
+      if (handler.route.hasOwnProperty(method)) {
 
         // 把 ctx 传给对应方法的 this 进行调用，在该方法内用 this 代替 koa 的 ctx
         // 由于路由处理程序为最终生产者，暂不提供 next 参数
-        let result = handler.route[method].call(ctx)
+        try {
+          let result = handler.route[method].call(ctx)
 
-        if (result) { // 若函数返回了一个值
+          if (typeof result !== 'undefined') { // 若函数返回了一个值
 
-          // 若返回的是 Promise 对象，则为异步函数，等待 Promise 处理完毕；如有错误，输出而不抛出
-          if (result.toString() === '[object Promise]') {
-            let finalResult = await result.catch(console.err)
+            // 若返回的是 Promise 对象，则为异步函数，等待 Promise 处理完毕；如有错误，输出而不抛出
+            if (result.toString() === '[object Promise]') {
+              let finalResult = await result
 
-            // 若 Promise 最终返回一个值，则将该值作为响应体
-            if (finalResult) {
-              ctx.body = finalResult
+              // 若 Promise 最终返回一个值，则将该值作为响应体
+              if (typeof finalResult !== 'undefined') {
+                ctx.body = finalResult
+              } else {
+                ctx.body = ''
+              }
+            } else { // 普通函数返回一个值，也将该值作为响应体
+              ctx.body = result
             }
-          } else { // 普通函数返回一个值，也将该值作为响应体
-            ctx.body = result
+          } else {
+            ctx.body = ''
+          }
+        } catch (e) {
+          console.trace(e)
+          if (!e.status || e.status < 400) {
+            ctx.status = 500
           }
         }
-        return
+      } else {
+        ctx.throw(405)
       }
-      ctx.throw(405)
     } else {
       // 路径不合法或 require 不成功，一律 404
       ctx.throw(404)

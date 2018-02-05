@@ -2,7 +2,7 @@ const koa = require('koa')
 const app = new koa()
 const kf = require('../index')
 
-const port = 3000
+const port = 3001
 
 const axios = require('axios').create({
   baseURL: `http://localhost:${port}`
