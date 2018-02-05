@@ -67,7 +67,7 @@ module.exports = (thatModule) => {
             ctx.body = ''
           }
         } catch (e) {
-          console.trace(e)
+          console.error(e)
           if (!e.status || e.status < 400) {
             ctx.status = 500
           }
