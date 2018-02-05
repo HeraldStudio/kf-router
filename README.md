@@ -71,6 +71,10 @@ exports.route = {
 
 我们也为路由处理程序的引入提供了缓存，使得多次请求同一路由时，不会反复读取文件系统。虽然 Node.js `require` 也提供此机制，但我们对此进行改进，以便进一步适应 kf-router。
 
+### 自动重载
+
+使用 `kf(module, { hotReload: true })` 来配置自动重载的 `kf-router`。该方法实质上是利用 ES6 Proxy 语义，禁止所有非 npm 模块继续进入 require cache，使得所有未被 `require()` 过的路由处理程序在每次使用时都重新编译。
+
 ### 声明
 
 kf-router 是简易的无协议开源软件，您暂时可以按照 [WTFPL](https://zh.wikipedia.org/zh-hans/WTFPL) 随意使用它们。

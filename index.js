@@ -1,6 +1,22 @@
-module.exports = (thatModule) => {
+const Freezed = (object) => new Proxy(object, {
+  set: (target, property, value) => {
+    if (property.indexOf('/node_modules/') + 1) {
+      target[property] = value
+    }
+    return true
+  },
+  get: (target, property) => target[property]
+})
 
+module.exports = (thatModule, config = {}) => {
+
+  let hotReload = config.hotReload || false
   let requireCache = {}
+
+  if (hotReload) {
+    requireCache = Freezed(requireCache)
+    thatModule.__proto__.constructor._cache = Freezed(thatModule.__proto__.constructor._cache)
+  }
 
   let requireHandler = route => {
     try {
