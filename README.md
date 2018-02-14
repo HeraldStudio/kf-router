@@ -67,13 +67,17 @@ exports.route = {
 
 如果你既需要当前路径下包含子路由，又需要解析当前路径本身，可以用 index.js 来代替当前路径本身的路由处理程序。例如 `/api/index.js` 文件可以处理 `/api` 的请求，同时当然也可以处理 `/api/index` 的请求。
 
-如果你注重安全性，我们通过对请求路径进行正则匹配，排除了那些恶意构造的请求，以防止对服务器文件系统进行搜寻和破坏，实现了简易的安全措施。
+### 选项
 
-我们也为路由处理程序的引入提供了缓存，使得多次请求同一路由时，不会反复读取文件系统。虽然 Node.js `require` 也提供此机制，但我们对此进行改进，以便进一步适应 kf-router。
+使用第二参数 `option` 可为 kf-router 指定选项。目前支持的选项有：
 
-### 自动重载
+- `verbose`: kf-router 默认会输出被加载的所有路由，使用 `verbose: false` 来禁用此特性；
+- `ignore`: 字符串列表，自动进行 `module-load` 时，将忽略此列表中定义的模式。模式串支持 [Glob 语法](https://github.com/isaacs/node-glob)。
 
-使用 `kf(module, { hotReload: true })` 来配置自动重载的 `kf-router`。该方法实质上是利用 ES6 Proxy 语义，禁止所有非 npm 模块继续进入 require cache，使得所有未被 `require()` 过的路由处理程序在每次使用时都重新编译。
+### 特性
+
+- kf-router 会自动加载（module-load）传入的 `module` 所在路径下所有符合条件的 `.js` 模块；
+- 注意：在目前的实现中，若某 `.js` 模块同时作为主程序和路由处理程序（参见 `test/index.js`），需要将 `exports.route = ...` 写在 `app.use(kf(module, ...))` 之前，否则路由将被忽略。
 
 ### 声明
 

@@ -15,12 +15,14 @@
     "router"
   ],
   "author": "Herald Studio",
-  "license": "GPL-2.0",
+  "license": "WTFPL",
   "bugs": {
     "url": "https://github.com/HeraldStudio/kf-router/issues"
   },
   "homepage": "https://github.com/HeraldStudio/kf-router#readme",
   "dependencies": {
+    "chalk": "^2.3.1",
+    "glob": "^7.1.2",
     "koa": "^2.4.1"
   },
   "devDependencies": {

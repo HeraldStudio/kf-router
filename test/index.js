@@ -8,8 +8,6 @@ const axios = require('axios').create({
   baseURL: `http://localhost:${port}`
 })
 
-app.use(kf(module))
-
 exports.route = {
   async get() {
     return [
@@ -31,4 +29,5 @@ exports.route = {
   }
 }
 
+app.use(kf(module))
 app.listen(port)
