@@ -72,7 +72,10 @@ exports.route = {
 使用第二参数 `option` 可为 kf-router 指定选项。目前支持的选项有：
 
 - `verbose`: kf-router 默认会输出被加载的所有路由，使用 `verbose: false` 来禁用此特性；
-- `ignore`: 字符串列表，自动进行 `module-load` 时，将忽略此列表中定义的模式。模式串支持 [Glob 语法](https://github.com/isaacs/node-glob)。
+- `ignore`: 字符串列表，自动进行 `module-load` 时，将忽略此列表中定义的模式:
+  - 模式串支持 [Glob 语法](https://github.com/isaacs/node-glob)；
+  - 模式串不支持绝对路径，需要书写相对于模块根目录的相对路径，开头有无 `/` 等价，结尾不带 `.js`；
+  - kf-router 自带一个忽略模式：`/node_modules/**/*`。
 
 ### 特性
 
