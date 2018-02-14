@@ -1,11 +1,9 @@
 {
   "name": "kf-router",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A File-based ReSTful router for koa.",
   "main": "index.js",
-  "scripts": {
-    "test": "node ./test/index.js"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HeraldStudio/kf-router.git"

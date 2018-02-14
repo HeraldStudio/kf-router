@@ -8,7 +8,7 @@ module.exports = (thatModule, config = {}) => {
 
   let modules = {}
 
-  glob.sync(root + '/**/*.js', {
+  let dropped = glob.sync(root + '/**/*.js', {
     ignore: ['**/node_modules/**/*.js'].concat(config.ignore || [])
   }).map(f => {
     let absolute = path.resolve(f)
@@ -16,11 +16,22 @@ module.exports = (thatModule, config = {}) => {
     let mod = require(absolute)
     if (mod.hasOwnProperty('route')) {
       if (config.verbose !== false) {
-        console.log('kf-router: module-load ' + chalk.cyan(relative), Object.keys(mod.route).join(', '))
+        console.log('kf-router [load] ' + chalk.cyan(relative), Object.keys(mod.route).join(', '))
       }
       modules[relative] = mod
+      return false
+    } else {
+      if (config.verbose !== false) {
+        console.log('kf-router [drop] ' + chalk.yellow(relative))
+      }
+      return true
     }
-  })
+  }).find(k => k)
+
+  if (dropped) {
+    console.log(chalk.yellow('kf-router: One or some modules are loaded but dropped. ' +
+      'It is highly recommended to implicitly ignore them.'))
+  }
 
   let requireRoute = route => {
     route = route.replace(/\/$/, '')
