@@ -17,7 +17,7 @@ module.exports = (thatModule, config = {}) => {
     let absolute = path.resolve(f)
     let relative = absolute.replace(root, '').replace(/\.js$/, '')
     let mod = require(absolute)
-    if (mod.hasOwnProperty('route')) {
+    if (typeof mod === 'object' && mod.hasOwnProperty('route')) {
       if (config.verbose !== false) {
         console.log('kf-router [load] ' + chalk.cyan(relative), Object.keys(mod.route).join(', '))
       }
