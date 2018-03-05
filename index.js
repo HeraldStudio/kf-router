@@ -1,11 +1,11 @@
 const glob = require('glob')
 const path = require('path')
 const chalk = require('chalk')
+const unixify = fn => fn.replace(/\\/g, '/')
 
 module.exports = (thatModule, config = {}) => {
 
-  const root = path.normalize(thatModule.filename
-                              .replace(/\\/g, '/')
+  const root = path.normalize(unixify(thatModule.filename)
                               .replace(/\/[^\/]*$/, ''))
 
   let modules = {}
@@ -17,7 +17,7 @@ module.exports = (thatModule, config = {}) => {
     })
   }).map(f => {
     let absolute = path.resolve(f)
-    let relative = absolute.replace(root, '').replace(/\.js$/, '')
+    let relative = unixify(absolute.replace(root, '').replace(/\.js$/, ''))
     let mod = require(absolute)
     if (typeof mod === 'object' && mod.hasOwnProperty('route')) {
       if (config.verbose !== false) {
