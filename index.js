@@ -4,7 +4,9 @@ const chalk = require('chalk')
 
 module.exports = (thatModule, config = {}) => {
 
-  const root = path.normalize(thatModule.filename.replace(/\/[^\/]*$/, ''))
+  const root = path.normalize(thatModule.filename
+                              .replace(/\\/g, '/')
+                              .replace(/\/[^\/]*$/, ''))
 
   let modules = {}
 
