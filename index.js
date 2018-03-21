@@ -35,7 +35,7 @@ module.exports = (thatModule, config = {}) => {
 
   if (dropped) {
     console.log(chalk.yellow('\nkf-router: One or some modules are loaded but dropped. ' +
-      'It is highly recommended to implicitly ignore them.'))
+      'It is highly recommended to explicitly ignore them.'))
   }
 
   let requireRoute = route => {
@@ -60,18 +60,8 @@ module.exports = (thatModule, config = {}) => {
     if (!handler.route.hasOwnProperty(method)) {
       ctx.throw(405)
     }
-    try {
-      ctx.body = await handler.route[method].call(ctx) || ''
-    } catch (e) {
-      if (typeof e === 'number') {
-        ctx.body = ''
-        ctx.status = e
-      } else if (typeof e === 'string') {
-        ctx.body = e
-        ctx.status = 400
-      } else {
-        throw e
-      }
-    }
+    // does not modify ctx.body
+    // return to upstream instead
+    return ((await handler.route[method].call(ctx)) || '')
   }
 }
