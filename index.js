@@ -12,8 +12,6 @@ module.exports = (rootPath = 'routes') => {
   const root = path.join(path.dirname(rootModule.filename), rootPath)
   let modules = {}
 
-  console.log(root)
-
   glob.sync(root + '/**/*.js', {}).map(f => {
     let absolute = path.resolve(f)
     let relative = unixify(absolute.replace(root, '').replace(/\.js$/, ''))
