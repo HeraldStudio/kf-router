@@ -25,20 +25,18 @@ const koa = require('koa')
 const app = new koa()
 const kf = require('kf-router')
 
-app.use(kf(module))
+app.use(kf())
 app.listen(3000)
 ```
-
-将当前所在的 `module` 传入 kf，使 kf-router 得到从你的当前路径进行 `require` 的能力，接下来即可创建路由处理程序，开始服务。
 
 ### 路由处理程序
 
 kf-router 将 Koa 的中间件语法进行了简单改造，使得路由处理程序更易书写。
 
-路由处理程序只需放在主程序同级或次级文件夹，并导出 exports.route 对象。
+路由处理程序默认情况下只需放在主程序同级的 `routes` 文件夹内，并导出 exports.route 对象。
 
 ```javascript
-//: hello.js
+//: routes/hello.js
 
 exports.route = {
     get() {
@@ -52,7 +50,7 @@ exports.route = {
 若要访问 Koa `ctx` 对象，使用 `this` 即可：
 
 ```javascript
-//: hello.js
+//: routes/hello.js
 
 exports.route = {
     async get() {
@@ -61,7 +59,7 @@ exports.route = {
 }
 ```
 
-因为路由中间件将作为中间件栈的最顶层，`next()` 方法不再提供。请始终将 `app.use(kf(module))` 放在主程序中所有 `use` 语句的最后，因为你无法使用路由以后的任何中间件。
+因为路由中间件将作为中间件栈的最顶层，`next()` 方法不再提供。请始终将 `app.use(kf())` 放在主程序中所有 `use` 语句的最后，因为你无法使用路由以后的任何中间件。
 
 路由处理程序可以放在任意一级子文件夹中，按照需要被请求的路径来命名，例如 `a/b.js` 可以处理 `/a/b` 的请求。路径可以为大小写字母、数字、下划线和中划线，不支持在路径名中使用参数。我们建议用原生的参数表来传递请求参数。
 
@@ -69,18 +67,7 @@ exports.route = {
 
 ### 选项
 
-使用第二参数 `option` 可为 kf-router 指定选项。目前支持的选项有：
-
-- `verbose`: kf-router 默认会输出被加载的所有路由，使用 `verbose: false` 来禁用此特性；
-- `ignore`: 字符串列表，自动进行 `module-load` 时，将忽略此列表中定义的模式:
-  - 模式串支持 [Glob 语法](https://github.com/isaacs/node-glob)；
-  - 模式串不支持绝对路径，需要书写相对于模块根目录的相对路径，开头有无 `/` 等价，结尾不带 `.js`；
-  - kf-router 自带一个忽略模式：`/node_modules/**/*`。
-
-### 特性
-
-- kf-router 会自动加载（module-load）传入的 `module` 所在路径下所有符合条件的 `.js` 模块；
-- 注意：在目前的实现中，若某 `.js` 模块同时作为主程序和路由处理程序（参见 `test/index.js`），需要将 `exports.route = ...` 写在 `app.use(kf(module, ...))` 之前，否则路由将被忽略。
+`kf()` 支持传入一个参数来自定义路由处理程序所在的目录，默认为 `routes`。
 
 ### 声明
 

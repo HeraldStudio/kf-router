@@ -3,40 +3,27 @@ const path = require('path')
 const chalk = require('chalk')
 const unixify = fn => fn.replace(/\\/g, '/')
 
-module.exports = (thatModule, config = {}) => {
+module.exports = (rootPath = 'routes') => {
+  let rootModule = module
+  while (rootModule.parent) {
+    rootModule = rootModule.parent
+  }
 
-  const root = path.normalize(unixify(thatModule.filename)
-                              .replace(/\/[^\/]*$/, ''))
-
+  const root = path.join(path.dirname(rootModule.filename), rootPath)
   let modules = {}
 
-  let dropped = glob.sync(root + '/**/*.js', {
-    ignore: ['/node_modules/**/*'].concat(config.ignore || []).map(k => {
-      if (!/^\//.test(k)) { k = '/' + k }
-      return root + k + '.js'
-    })
-  }).map(f => {
+  console.log(root)
+
+  glob.sync(root + '/**/*.js', {}).map(f => {
     let absolute = path.resolve(f)
     let relative = unixify(absolute.replace(root, '').replace(/\.js$/, ''))
     let mod = require(absolute)
     if (typeof mod === 'object' && mod.hasOwnProperty('route')) {
-      if (config.verbose !== false) {
-        console.log('kf-router [load] ' + chalk.cyan(relative), Object.keys(mod.route).join(', '))
-      }
       modules[relative] = mod
-      return false
     } else {
-      if (config.verbose !== false) {
-        console.log('kf-router [drop] ' + chalk.yellow(relative))
-      }
-      return true
+      console.log('kf-router [W] Loaded module without exports.route: ' + chalk.yellow(relative))
     }
   }).find(k => k)
-
-  if (dropped) {
-    console.log(chalk.yellow('\nkf-router: One or some modules are loaded but dropped. ' +
-      'It is highly recommended to explicitly ignore them.'))
-  }
 
   let requireRoute = route => {
     route = route.replace(/\/$/, '')
@@ -60,8 +47,11 @@ module.exports = (thatModule, config = {}) => {
     if (!handler.route.hasOwnProperty(method)) {
       ctx.throw(405)
     }
-    // does not modify ctx.body
-    // return to upstream instead
-    return ((await handler.route[method].call(ctx)) || '')
+    // does not handle errors
+    // pass through to upstream instead
+    let res = await handler.route[method].call(ctx)
+    if (res) {
+      ctx.body = res
+    }
   }
 }
