@@ -65,6 +65,20 @@ exports.route = {
 
 如果你既需要当前路径下包含子路由，又需要解析当前路径本身，可以用 index.js 来代替当前路径本身的路由处理程序。例如 `/api/index.js` 文件可以处理 `/api` 的请求，同时当然也可以处理 `/api/index` 的请求。
 
+kf-router 会自动支持 koa-bodyparser，将请求参数（合并了 URL 参数和 body 参数）传入路由处理程序：
+
+```javascript
+//: routes/add.js
+
+exports.route = {
+    async post({ a, b }) {
+        return Number(a) + Number(b)
+    }
+}
+```
+
+注：若没有 koa-bodyparser，将只解析 URL 参数；若 body 为纯字符串，将只提供此字符串本身作为参数。
+
 ### 选项
 
 `kf()` 支持传入一个参数来自定义路由处理程序所在的目录，默认为 `routes`。

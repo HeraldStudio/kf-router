@@ -45,9 +45,18 @@ module.exports = (rootPath = 'routes') => {
     if (!handler.route.hasOwnProperty(method)) {
       ctx.throw(405)
     }
+    let params
+    // supports koa-bodyparser
+    if (typeof ctx.request.body === 'object' || typeof ctx.request.body === 'undefined') {
+      params = {}
+      Object.assign(params, ctx.request.body || {})
+      Object.assign(params, ctx.query)
+    } else {
+      params = ctx.request.body
+    }
     // does not handle errors
     // pass through to upstream instead
-    let res = await handler.route[method].call(ctx)
+    let res = await handler.route[method].call(ctx, params)
     if (res) {
       ctx.body = res
     }
