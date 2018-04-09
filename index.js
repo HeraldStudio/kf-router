@@ -50,9 +50,9 @@ module.exports = (rootPath = 'routes') => {
     if (typeof ctx.request.body === 'object' || typeof ctx.request.body === 'undefined') {
       params = {}
       Object.assign(params, ctx.request.body || {})
-      Object.assign(params, ctx.query)
+      Object.assign(params, ctx.query || {})
     } else {
-      params = ctx.request.body
+      params = ctx.request.body || {}
     }
     // does not handle errors
     // pass through to upstream instead
