@@ -2,6 +2,11 @@ const glob = require('glob')
 const path = require('path')
 const chalk = require('chalk')
 const unixify = fn => fn.replace(/\\/g, '/')
+const safeAssign = (a, b) => {
+  if (typeof a === 'object' && typeof b === 'object' && a != null && b != null) {
+    for (let key in b) if (!(key in a)) a[key] = b[key]
+  }
+}
 
 module.exports = (rootPath = 'routes') => {
   let rootModule = module
@@ -39,10 +44,11 @@ module.exports = (rootPath = 'routes') => {
   return async ctx => {
     let [route, method] = [ctx.path, ctx.method.toLowerCase()]
     let handler = requireRoute(route)
-    if (!handler || !handler.route) {
+    let routeObj = handler.route
+    if (!handler || !routeObj) {
       ctx.throw(404)
     }
-    if (!handler.route.hasOwnProperty(method)) {
+    if (!routeObj.hasOwnProperty(method)) {
       ctx.throw(405)
     }
     let params
@@ -54,9 +60,12 @@ module.exports = (rootPath = 'routes') => {
     } else {
       params = ctx.request.body || {}
     }
+    // inject properties of routeObj (only those not formerly defined in ctx) into ctx
+    safeAssign(ctx, routeObj)
+
     // does not handle errors
     // pass through to upstream instead
-    let res = await handler.route[method].call(ctx, params)
+    let res = await routeObj[method].call(ctx, params)
     if (res) {
       ctx.body = res
     }
