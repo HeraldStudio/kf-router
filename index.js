@@ -44,8 +44,11 @@ module.exports = (rootPath = 'routes') => {
   return async ctx => {
     let [route, method] = [ctx.path, ctx.method.toLowerCase()]
     let handler = requireRoute(route)
+    if (!handler) {
+      ctx.throw(404)
+    }
     let routeObj = handler.route
-    if (!handler || !routeObj) {
+    if (!routeObj) {
       ctx.throw(404)
     }
     if (!routeObj.hasOwnProperty(method)) {
