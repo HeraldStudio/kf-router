@@ -32,6 +32,7 @@ let test = async () => {
   await assertRoute('POST', '/', 'POST / [index.js]')
   await assertRoute('PUT', '/', 'PUT / [index.js]')
   await assertRoute('DELETE', '/', 'DELETE / [index.js]')
+  await assertRoute('GET','/other','GET /other [other/index.js]')
   await assertRoute('GET', '/nothing', 'Not Found')
   console.log('Passed')
   process.exit(0)

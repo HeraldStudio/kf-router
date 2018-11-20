@@ -1,14 +1,21 @@
 exports.route = {
-  async get() {
-    return 'GET / [index.js]'
-  },
-  post() {
-    return 'POST / [index.js]'
-  },
-  put() {
-    return 'PUT / [index.js]'
-  },
-  delete() {
-    return 'DELETE / [index.js]'
-  }
+    beforeAll(method) {
+        this.msg = 'before index.js ' + method;
+    },
+    get() {
+        console.log(this.msg);
+        return 'GET / [index.js]'
+    },
+    post() {
+        console.log(this.msg);
+        return 'POST / [index.js]'
+    },
+    put() {
+        console.log(this.msg);
+        return 'PUT / [index.js]'
+    },
+    delete() {
+        console.log(this.msg);
+        return 'DELETE / [index.js]'
+    }
 }

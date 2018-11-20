@@ -68,7 +68,13 @@ module.exports = (rootPath = 'routes') => {
 
     // does not handle errors
     // pass through to upstream instead
+    if(routeObj['beforeAll']){
+      await routeObj['beforeAll'].call(ctx,method, params)
+    }
     let res = await routeObj[method].call(ctx, params)
+    if(routeObj['afterAll']){
+      await routeObj['afterAll'].call(ctx,method, params)
+    }
     if (res) {
       ctx.body = res
     }
